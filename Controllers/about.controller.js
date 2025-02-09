@@ -1,15 +1,28 @@
 import Aboutus from "../Models/Aboutus.model.js";
 import ApiError from "../Utils/ApiError.js";
+import fs from 'fs'
+import path from 'path'
 
+
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+// Create AboutUs Controller
 const createAboutus = async (req, res, next) => {
   let data = req.body;
   try {
+    if (req.file) {
+      data.imageSrc = `/uploads/${req.file.filename}`;
+    }
     data.createdAt = new Date().toISOString();
     let newAbout = new Aboutus(data);
     await newAbout.save();
     res.status(201).json({ status: "Success", data: newAbout });
   } catch (error) {
-    next(new ApiError(`Error From create about us`), 500);
+    next(new ApiError(`Error From create about us`, 500));
   }
 };
 
@@ -42,14 +55,18 @@ const getAboutById = async (req, res, next) => {
   }
 };
 
+// Delete AboutUs Controller
 const deleteAboutById = async (req, res, next) => {
   let { id } = req.params;
   try {
     let deletedItem = await Aboutus.findByIdAndDelete(id);
     if (!deletedItem)
-      return res
-        .status(404)
-        .json({ status: "Fail", data: `No Data For This Id : ${id}` });
+      return res.status(404).json({ status: "Fail", data: `No Data For This Id : ${id}` });
+    
+    if (deletedItem.imageSrc) {
+      const imagePath =  deletedItem.imageSrc;
+        fs.unlinkSync(`.${imagePath}`);
+    }
 
     res.status(200).json({ status: "Success", data: deletedItem });
   } catch (error) {
@@ -57,6 +74,7 @@ const deleteAboutById = async (req, res, next) => {
   }
 };
 
+// Update AboutUs Controller
 const updateAboutById = async (req, res, next) => {
   let newData = req.body;
   let { id } = req.params;
@@ -64,20 +82,25 @@ const updateAboutById = async (req, res, next) => {
   try {
     let oldData = await Aboutus.findById(id);
     if (!oldData)
-      return res
-        .status(404)
-        .json({ status: "Fail", data: `No Data For This Id : ${id}` });
+      return res.status(404).json({ status: "Fail", data: `No Data For This Id : ${id}` });
+    
+    if (req.file) {
+      if (oldData.imageSrc) {
+        const oldImagePath =  oldData.imageSrc;
+        console.log(oldImagePath);
+        fs.unlinkSync(`.${oldImagePath}`)
+        
+      }
+      newData.imageSrc = `/uploads/${req.file.filename}`;
+    }
 
-    let data = await Aboutus.findByIdAndUpdate(
-      id,
-      { ...newData },
-      { new: true }
-    );
-    res.status(200).json({ status: "Success", data: data });
+    let updatedData = await Aboutus.findByIdAndUpdate(id, { ...newData }, { new: true });
+    res.status(200).json({ status: "Success", data: updatedData });
   } catch (error) {
-    next(new ApiError(`Error From Update Data`, 500));
+    next(new ApiError(`Error From Update Data ${error}`, 500));
   }
 };
+
 export {
   createAboutus,
   getAboutById,

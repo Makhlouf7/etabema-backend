@@ -1,23 +1,23 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import { title } from "process";
 dotenv.config();
 
 export const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.USERPASS,
-  },
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.USERPASS,
+    },
 });
 
-export const emailOptions = async (email, title, status, id) => {
-  const mail_option = {
+export const emailOptions = async (email, status,id) => {
+    const mail_option = {
     from: process.env.EMAIL,
     to: email,
-    subject: title,
+    subject: "Your Order",
     html: `
         <!DOCTYPE html>
         <html>
@@ -106,12 +106,12 @@ export const emailOptions = async (email, title, status, id) => {
 
         </html>
         `,
-  };
+    };
 
-  try {
-    const info = await transporter.sendMail(mail_option);
-    console.log(`Email sent successfully to ${email}`);
-  } catch (error) {
-    console.log(`Fail To sent ${email}`, error);
-  }
+    try {
+        const info = await transporter.sendMail(mail_option);
+        console.log(`Email sent successfully to ${email}`);
+    } catch (error) {
+        console.log(`Fail To sent ${email}`, error);
+    }
 };

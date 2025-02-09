@@ -16,7 +16,8 @@ import orderRoutes from "./Routes/order.routes.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
+const port = 5000;
 
 // Handle Cors
 const corsConnfig = {
@@ -41,6 +42,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+
+app.use( '/uploads', express.static('./uploads'))
+
 // Test Route
 app.get("/test", (req, res) => {
   res.send({ msg: "Hello Products Api" });
@@ -62,3 +66,5 @@ app.listen(port, () => {
   console.log(`Api Is Running On Port : ${port}`);
   DBConnection();
 });
+
+

@@ -10,35 +10,24 @@ const craeteProduct = async (req, res, next) => {
         // Must Unique
         const existProduct = await Products.findOne({ titleEn: product.titleEn });
         if (existProduct) {
-        return res
-            .status(400)
-            .json({ status: "Fail", data: "This Product is Already Exists" });
+            return res
+                .status(400)
+                .json({ status: "Fail", data: "This Product is Already Exists" });
         }
 
         let compareCategory = await Category.findOne({ titleEn: categoryTitle });
         if (!compareCategory) {
-        return res
-            .status(404)
-            .json({ status: "Fail", data: "No Category Title with this name" });
+            return res
+                .status(404)
+                .json({ status: "Fail", data: "No Category Title with this name" });
         }
 
         product.createdAt = new Date().toISOString();
         product.category = compareCategory._id;
-        // Validate accordion data
-        if (product.accordion){
-            if (!Array.isArray(product.accordion) || !product.accordion.length) {
-                return res
-                    .status(400)
-                    .json({ message: "Accordion data must be a non-empty array." });
-                }
-        }
         let newProduct = new Products(product);
-
         await newProduct.save();
         res.status(201).json({ status: "Success", data: newProduct });
     } catch (error) {
-        console.log(error);
-
         if (error.name == "ValidationError") {
         ValidationError(error, res);
         }
@@ -93,32 +82,22 @@ const deleteProductById = async (req, res, next) => {
     }
 };
 
-const updateProductById = async (req, res, next) => {
-    let newProduct = req.body;
-    let { id } = req.params;
+const updateProductById = async (req , res , next )=>{
+    let newProduct = req.body
+    let {id} = req.params
     try {
-        let oldProduct = await Products.findById(id);
-        if (!oldProduct)
-        return res
-            .status(404)
-            .json({ status: "Fail", data: `No Product With This ID  : ${id}` });
+        let oldProduct = await Products.findById(id)
+        if (! oldProduct)
+            return res.status(404).json({status : "Fail" , data : `No Product With This ID  : ${id}`})
 
-        let allData = await Products.findByIdAndUpdate(
-        id,
-        { ...newProduct },
-        { new: true }
-        );
+        let allData = await Products.findByIdAndUpdate(id , {...newProduct} , {new : true})
 
-        res.status(200).json({ statusc: "Success", data: allData });
+        res.status(200).json({statusc : "Success" , data : allData})
+
     } catch (error) {
-        next(new ApiError("Error From Update Product", 500));
+        next( new ApiError('Error From Update Product', 500))
     }
-};
+}
 
-export {
-  craeteProduct,
-  getAllProducts,
-  getProductById,
-  deleteProductById,
-  updateProductById,
-};
+
+export { craeteProduct, getAllProducts, getProductById, deleteProductById ,updateProductById };
