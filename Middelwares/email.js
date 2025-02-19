@@ -97,7 +97,7 @@ export const emailOptions = async (email, status, id) => {
 
                     <p>If you have any questions or need assistance, feel free to contact us at any time.</p>
 
-                    <a href="https://example.com" class="button">Visit Our Website</a>
+                    <a href="https://etabema.com/tracking.html" class="button">Visit Our Website</a>
                 </div>
                 <div class="email-footer">
                     <p>&copy; 2025 Your Company. All rights reserved.</p>

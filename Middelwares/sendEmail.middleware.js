@@ -87,7 +87,7 @@ export const SendUserEmail = async (email, name, msg) => {
         <body>
             <div class="email-container">
                 <div class="email-header">
-                    <h1>Wellcome</h1>
+                    <h1>Help</h1>
                 </div>
                 <div class="email-body">
                     <p>Hello there ,</p>
