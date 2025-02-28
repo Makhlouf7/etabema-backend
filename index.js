@@ -44,6 +44,8 @@ app.use(morgan("dev"));
 
 
 app.use( '/uploads', express.static('./uploads'))
+app.use( '/Post', express.static('./Post'))
+
 
 // Test Route
 app.get("/test", (req, res) => {
