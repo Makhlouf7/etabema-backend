@@ -1,35 +1,46 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema(
-  {
-    title: { 
-        type: String,
-        required: true, 
-        trim: true 
-        },
-    content: { 
-        type: String,
-        required: true 
-        },
-    media: {
-         type: String 
-        }, 
-    author: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "User", required: true 
-    },
-    published: { 
-        type: Boolean,
-        default: false
-               },  
-    socialMediaShared: { 
-        type: Boolean,
-         default: false 
-        }, 
+const postSchema = new mongoose.Schema({
+  titleEn: {
+    type: String,
+    required: [true, "Post must have title"],
+    trim: true,
   },
-  { timestamps: true }
-);
+  titleBr: {
+    type: String,
+    required: [true, "Post must have title"],
+    trim: true,
+  },
+  titleAr: {
+    type: String,
+    required: [true, "Post must have title"],
+    trim: true,
+  },
+  contentEn: {
+    type: String,
+    required: [true, "Post must have content"],
+    trim: true,
+  },
+  contentBr: {
+    type: String,
+    required: [true, "Post must have content"],
+    trim: true,
+  },
+  contentAr: {
+    type: String,
+    required: [true, "Post must have content"],
+    trim: true,
+  },
+  goToURL: String,
+  media: {
+    type: String,
+    required: [true, "Post must have an image"],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+});
 
-
-let post = mongoose.model("Post", postSchema);
-export default post;
+const Post = mongoose.model("Post", postSchema);
+export default Post;

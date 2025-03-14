@@ -5,6 +5,11 @@ let orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  orderID: {
+    type: String,
+    unique: true,
+    default: Date.now(),
+  },
   title: {
     type: String,
     trim: true,

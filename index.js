@@ -12,6 +12,11 @@ import homeRouter from "./Routes/home.routes.js";
 import ServiceRoutes from "./Routes/service.routes.js";
 import aboutRouter from "./Routes/about.routes.js";
 import orderRoutes from "./Routes/order.routes.js";
+import postRoutes from "./Routes/blog.routes.js";
+import globalErrorHandler from "./Controllers/error.controller.js";
+import ApiError from "./Utils/ApiError.js";
+import subscribeRoutes from "./Routes/subscribe.routes.js";
+import statsRouter from "./Routes/stats.routes.js";
 // Config
 dotenv.config();
 
@@ -42,10 +47,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-
-app.use( '/uploads', express.static('./uploads'))
-app.use( '/Post', express.static('./Post'))
-
+app.use("/uploads", express.static("./uploads"));
+app.use("/Post", express.static("./Post"));
 
 // Test Route
 app.get("/test", (req, res) => {
@@ -58,15 +61,23 @@ app.use("/category", categoryRouter);
 app.use("/products", productRouter);
 app.use("/staticData", staticRouter);
 app.use("/homeData", homeRouter);
-app.use("/services", ServiceRoutes); 
+app.use("/services", ServiceRoutes);
 app.use("/about", aboutRouter);
 app.use("/order", orderRoutes);
+app.use("/post", postRoutes);
+app.use("/subscribe", subscribeRoutes);
+app.use("/stats", statsRouter);
+// Handle any unrecognized path
+app.all("*", (req, res, next) => {
+  console.log("Error Handle unrecognized path");
+  next(new ApiError(`Can't find ${req.originalUrl} on this server`, 404));
+});
+
+// Global error handling middleware
+app.use(globalErrorHandler);
 
 //Listen Application
-
 DBConnection();
 app.listen(port, () => {
   console.log(`Api Is Running On Port : ${port}`);
 });
-
-

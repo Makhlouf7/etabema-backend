@@ -227,6 +227,12 @@ let staticSchema = new mongoose.Schema({
     required: true,
   },
 
+  // Blogs
+  postsHeroURL: {
+    type: String,
+    trim: true,
+    required: true,
+  },
   createdAt: {
     type: String,
     trim: true,
