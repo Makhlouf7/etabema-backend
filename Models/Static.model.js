@@ -94,66 +94,6 @@ let staticSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  servicesIntroductionTitleEn: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesIntroductionTitleAr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesIntroductionTitleBr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesIntroductionDescriptionEn: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesIntroductionDescriptionAr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesIntroductionDescriptionBr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesCardsTitleEn: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesCardsTitleAr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesCardsTitleBr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesCardsDescriptionEn: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesCardsDescriptionAr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  servicesCardsDescriptionBr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
   // Categories
   categoriesHeroURL: {
     type: String,
@@ -175,36 +115,7 @@ let staticSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  categoriesTitleEn: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  categoriesTitleAr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  categoriesTitleBr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  categoriesDescriptionEn: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  categoriesDescriptionAr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  categoriesDescriptionBr: {
-    type: String,
-    trim: true,
-    required: true,
-  },
+
   // About
   aboutHeroURL: {
     type: String,
