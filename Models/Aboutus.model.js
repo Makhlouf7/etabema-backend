@@ -51,10 +51,16 @@ let aboutSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
+  position: Number,
   createdAt: {
     type: String,
     trim: true,
   },
+});
+
+aboutSchema.pre("find", function (next) {
+  this.sort({ position: 1 });
+  next();
 });
 
 let Aboutus = mongoose.model("About", aboutSchema);

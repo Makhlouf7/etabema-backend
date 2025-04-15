@@ -1,4 +1,5 @@
 import express from "express";
+import resizeImage from "../Utils/resizeImage.js";
 import {
   createAboutus,
   deleteAboutById,
@@ -15,12 +16,24 @@ const aboutRouter = express.Router();
 
 aboutRouter
   .route("/create-about")
-  .post(authencatication, restrictTo("admin") , upload.single('imageSrc'), createAboutus);
+  .post(
+    authencatication,
+    restrictTo("admin"),
+    upload.single("imageSrc"),
+    resizeImage({ width: 500, height: 500, quality: 75 }),
+    createAboutus
+  );
 aboutRouter.route("/").get(getAllAbout);
 
 aboutRouter
   .route("/:id")
   .get(getAboutById)
   .delete(authencatication, restrictTo("admin"), deleteAboutById)
-  .patch(authencatication, restrictTo("admin"), upload.single('imageSrc')  , updateAboutById);
+  .patch(
+    authencatication,
+    restrictTo("admin"),
+    upload.single("imageSrc"),
+    resizeImage({ width: 500, height: 500, quality: 75 }),
+    updateAboutById
+  );
 export default aboutRouter;

@@ -17,6 +17,7 @@ import globalErrorHandler from "./Controllers/error.controller.js";
 import ApiError from "./Utils/ApiError.js";
 import subscribeRoutes from "./Routes/subscribe.routes.js";
 import statsRouter from "./Routes/stats.routes.js";
+import reorderRouter from "./Routes/reorder.routes.js";
 // Config
 dotenv.config();
 
@@ -67,6 +68,7 @@ app.use("/order", orderRoutes);
 app.use("/post", postRoutes);
 app.use("/subscribe", subscribeRoutes);
 app.use("/stats", statsRouter);
+app.use("/reorder", reorderRouter);
 // Handle any unrecognized path
 app.all("*", (req, res, next) => {
   console.log("Error Handle unrecognized path");

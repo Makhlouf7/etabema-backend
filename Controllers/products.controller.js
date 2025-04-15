@@ -1,6 +1,7 @@
 import Category from "../Models/Category.model.js";
 import Products from "../Models/Products.model.js";
 import ApiError from "../Utils/ApiError.js";
+import catchAsync from "../Utils/catchAsync.js";
 import { ValidationError } from "../Utils/ValidationError.js";
 import fs from "fs";
 import path from "path";
@@ -112,45 +113,42 @@ const deleteProductById = async (req, res, next) => {
   }
 };
 
-const updateProductById = async (req, res, next) => {
+const updateProductById = catchAsync(async (req, res, next) => {
   let newProduct = req.body;
   let { id } = req.params;
+  let categoryTitle = newProduct.categoryName?.trim();
 
-  try {
-    let oldProduct = await Products.findById(id);
-    if (!oldProduct) {
-      return res
-        .status(404)
-        .json({ status: "Fail", data: `No Product With This ID : ${id}` });
-    }
+  let oldProduct = await Products.findById(id);
+  if (!oldProduct) return next(new ApiError("No such product", 404));
 
-    if (req.file) {
-      if (oldProduct.productImage) {
-        const oldImagePath = path.join(process.cwd(), oldProduct.productImage);
-        console.log(`Deleting old image at: ${oldImagePath}`);
+  if (req.file) {
+    if (oldProduct.productImage) {
+      const oldImagePath = path.join(process.cwd(), oldProduct.productImage);
+      console.log(`Deleting old image at: ${oldImagePath}`);
 
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-          console.log("Old image deleted successfully");
-        } else {
-          console.log("Old image not found, skipping deletion");
-        }
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+        console.log("Old image deleted successfully");
+      } else {
+        console.log("Old image not found, skipping deletion");
       }
-
-      newProduct.productImage = `/uploads/${req.file.filename}`;
     }
 
-    let updatedProduct = await Products.findByIdAndUpdate(
-      id,
-      { ...newProduct },
-      { new: true }
-    );
-
-    res.status(200).json({ status: "Success", data: updatedProduct });
-  } catch (error) {
-    next(new ApiError("Error From Update Product", 500));
+    newProduct.productImage = `/uploads/${req.file.filename}`;
   }
-};
+
+  const existCategory = await Category.findOne({ titleEn: categoryTitle });
+  if (!existCategory) return next(new ApiError("No such category", 404));
+  newProduct.category = existCategory._id;
+
+  let updatedProduct = await Products.findByIdAndUpdate(
+    id,
+    { ...newProduct },
+    { new: true }
+  );
+
+  res.status(200).json({ status: "Success", data: updatedProduct });
+});
 
 export {
   craeteProduct,

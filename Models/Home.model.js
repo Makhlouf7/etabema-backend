@@ -71,11 +71,16 @@ let homeSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-
+  position: Number,
   createdAt: {
     type: String,
     trim: true,
   },
+});
+
+homeSchema.pre("find", function (next) {
+  this.sort({ position: 1 });
+  next();
 });
 
 let Home = mongoose.model("Home", homeSchema);

@@ -56,10 +56,16 @@ let productSchema = new mongoose.Schema({
     ref: "User",
   },
   accordion: { type: String, trim: true, required: true },
+  position: Number,
   createdAt: {
     type: Date,
     default: Date.now,
   },
+});
+
+productSchema.pre("find", function (next) {
+  this.sort({ position: 1 });
+  next();
 });
 
 let Products = mongoose.model("Products", productSchema);

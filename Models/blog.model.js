@@ -36,10 +36,16 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Post must have an image"],
   },
+  position: Number,
   createdAt: {
     type: Date,
     default: Date.now(),
   },
+});
+
+postSchema.pre("find", function (next) {
+  this.sort({ position: 1 });
+  next();
 });
 
 const Post = mongoose.model("Post", postSchema);

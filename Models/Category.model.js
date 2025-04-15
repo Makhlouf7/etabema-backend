@@ -75,27 +75,17 @@ let categorySchema = new mongoose.Schema({
     trim: true,
     // required : true
   },
-
+  position: Number,
   createdAt: {
     type: String,
     trim: true,
   },
 });
 
-// categorySchema.pre('save' , function(next ){
-
-//     let catogery  = this
-//     if (this.isModified(this.titleEn || catogery.isNew)){
-//         catogery.slug = slugify(catogery.titleEn , {lower : true})
-//     }
-//     next()
-// })
-
-// slug : {
-//     type : String ,
-//     unique : true ,
-//     lowercase : true
-// },
+categorySchema.pre("find", function (next) {
+  this.sort({ position: 1 });
+  next();
+});
 
 let Category = mongoose.model("Category", categorySchema);
 export default Category;
