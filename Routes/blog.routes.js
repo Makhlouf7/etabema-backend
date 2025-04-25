@@ -7,7 +7,6 @@ import {
   deletePost,
 } from "../Controllers/blog.controller.js";
 import upload from "../Middelwares/uploadImage.js";
-import resizeImage from "../Utils/resizeImage.js";
 import { authencatication } from "../Middelwares/auth.middelware.js";
 
 let postRoutes = express.Router();
@@ -17,21 +16,11 @@ postRoutes.route("/:id").get(getPostById);
 // Don't use authentication in development
 if (process.env.NODE_ENV == "production") postRoutes.use(authencatication);
 
-postRoutes
-  .route("/create-post")
-  .post(
-    upload.single("media"),
-    resizeImage({ width: 500, height: 500, quality: 75 }),
-    createPost
-  );
+postRoutes.route("/create-post").post(upload.single("media"), createPost);
 
 postRoutes
   .route("/:id")
   .delete(deletePost)
-  .patch(
-    upload.single("media"),
-    resizeImage({ width: 500, height: 500, quality: 75 }),
-    updatePost
-  );
+  .patch(upload.single("media"), updatePost);
 
 export default postRoutes;

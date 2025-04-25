@@ -1,5 +1,4 @@
 import express from "express";
-import resizeImage from "../Utils/resizeImage.js";
 import {
   createAboutus,
   deleteAboutById,
@@ -20,7 +19,6 @@ aboutRouter
     authencatication,
     restrictTo("admin"),
     upload.single("imageSrc"),
-    resizeImage({ width: 500, height: 500, quality: 75 }),
     createAboutus
   );
 aboutRouter.route("/").get(getAllAbout);
@@ -33,7 +31,6 @@ aboutRouter
     authencatication,
     restrictTo("admin"),
     upload.single("imageSrc"),
-    resizeImage({ width: 500, height: 500, quality: 75 }),
     updateAboutById
   );
 export default aboutRouter;

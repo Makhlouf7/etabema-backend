@@ -1,5 +1,4 @@
 import express from "express";
-import resizeImageForFields from "../Utils/resizeImageForFields.js";
 import {
   createStatic,
   getAllStatic,
@@ -38,12 +37,6 @@ staticRouter.route("/:id").patch(
     { name: "categoriesHeroURL", maxCount: 1 },
     { name: "aboutHeroURL", maxCount: 1 },
     { name: "postsHeroURL", maxCount: 1 },
-  ]),
-  resizeImageForFields([
-    { field: "servicesHeroURL", width: 1920, height: 1080, quality: 80 },
-    { field: "categoriesHeroURL", width: 1920, height: 1080, quality: 80 },
-    { field: "aboutHeroURL", width: 1920, height: 1080, quality: 80 },
-    { field: "postsHeroURL", width: 1920, height: 1080, quality: 80 },
   ]),
   updateElement
 );

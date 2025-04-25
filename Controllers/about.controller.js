@@ -1,14 +1,12 @@
 import Aboutus from "../Models/Aboutus.model.js";
 import ApiError from "../Utils/ApiError.js";
-import fs from 'fs'
-import path from 'path'
-
+import fs from "fs";
+import path from "path";
 
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 // Create AboutUs Controller
 const createAboutus = async (req, res, next) => {
@@ -61,11 +59,13 @@ const deleteAboutById = async (req, res, next) => {
   try {
     let deletedItem = await Aboutus.findByIdAndDelete(id);
     if (!deletedItem)
-      return res.status(404).json({ status: "Fail", data: `No Data For This Id : ${id}` });
-    
+      return res
+        .status(404)
+        .json({ status: "Fail", data: `No Data For This Id : ${id}` });
+
     if (deletedItem.imageSrc) {
-      const imagePath =  deletedItem.imageSrc;
-        fs.unlinkSync(`.${imagePath}`);
+      const imagePath = deletedItem.imageSrc;
+      fs.unlinkSync(`.${imagePath}`);
     }
 
     res.status(200).json({ status: "Success", data: deletedItem });
@@ -82,19 +82,24 @@ const updateAboutById = async (req, res, next) => {
   try {
     let oldData = await Aboutus.findById(id);
     if (!oldData)
-      return res.status(404).json({ status: "Fail", data: `No Data For This Id : ${id}` });
-    
+      return res
+        .status(404)
+        .json({ status: "Fail", data: `No Data For This Id : ${id}` });
+
     if (req.file) {
       if (oldData.imageSrc) {
-        const oldImagePath =  oldData.imageSrc;
+        const oldImagePath = oldData.imageSrc;
         console.log(oldImagePath);
-        fs.unlinkSync(`.${oldImagePath}`)
-        
+        fs.unlinkSync(`.${oldImagePath}`);
       }
       newData.imageSrc = `/uploads/${req.file.filename}`;
     }
 
-    let updatedData = await Aboutus.findByIdAndUpdate(id, { ...newData }, { new: true });
+    let updatedData = await Aboutus.findByIdAndUpdate(
+      id,
+      { ...newData },
+      { new: true }
+    );
     res.status(200).json({ status: "Success", data: updatedData });
   } catch (error) {
     next(new ApiError(`Error From Update Data ${error}`, 500));

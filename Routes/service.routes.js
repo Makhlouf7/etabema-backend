@@ -1,5 +1,4 @@
 import express from "express";
-import resizeImage from "../Utils/resizeImage.js";
 import {
   createService,
   deleteServiceById,
@@ -21,17 +20,11 @@ ServiceRoutes.use(authencatication);
 ServiceRoutes.route("/create-service").post(
   restrictTo("admin"),
   upload.single("imageSrc"),
-  resizeImage({ width: 500, height: 500, quality: 75 }),
   createService
 );
 ServiceRoutes.route("/:id")
   .get(getServiceById)
   .delete(restrictTo("admin"), deleteServiceById)
-  .patch(
-    restrictTo("admin"),
-    upload.single("imageSrc"),
-    resizeImage({ width: 500, height: 500, quality: 75 }),
-    updateServiceById
-  );
+  .patch(restrictTo("admin"), upload.single("imageSrc"), updateServiceById);
 
 export default ServiceRoutes;
