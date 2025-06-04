@@ -8,18 +8,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// const createStatic = async (req , res , next )=>{
-//     let data = req.body
-//     try {
-//         data.createdAt = new Date().toISOString()
-//         let newData = new StaticData(data)
-//         await newData.save()
-//         res.status(201).json({status : "Success" , data : newData})
-//     } catch (error) {
-//         next(new ApiError(`Error From Create Static` , 500))
-//     }
-// }
-
 const createStatic = async (req, res, next) => {
   let data = req.body;
 
@@ -108,28 +96,6 @@ const getElementById = async (req, res, next) => {
     next(new ApiError(`Error From Get By ID In Static`), 500);
   }
 };
-
-// const updateElement = async (req , res , next)=>{
-//     let newData = req.body;
-//     let { id } = req.params;
-
-//     try {
-//         let oldData = await StaticData.findById(id);
-//         if (!oldData)
-//         return res
-//             .status(404)
-//             .json({ status: "Fail", data: `No Data For This Id : ${id}` });
-
-//         let data = await StaticData.findByIdAndUpdate(
-//             id,
-//             { ...newData },
-//             { new: true }
-//         );
-//         res.status(200).json({ status: "Success", data: data });
-//     } catch (error) {
-//         next(new ApiError(`Error From Update Data`, 500));
-//     }
-// }
 
 const updateElement = async (req, res, next) => {
   let newData = req.body;

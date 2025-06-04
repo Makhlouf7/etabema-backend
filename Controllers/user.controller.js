@@ -2,8 +2,7 @@ import User from "../Models/User.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import ApiError from "../Utils/ApiError.js";
-import { SendUserEmail } from "../Middelwares/sendEmail.middleware.js";
-
+import sendEmail from "../Services/emailService.js";
 const createUser = async (req, res, next) => {
   try {
     let user = req.body;
@@ -64,10 +63,17 @@ export const userMsg = async (req, res, next) => {
         data: "Must Provide User Name Or Email Or Message",
       });
 
+    const msg = {
+      from: "contact@etabema.com",
+      to: "marketing@etabema.com",
+      replyTo: email,
+      subject: `Support - Etabema ${name}`,
+      text: message,
+    };
+    await sendEmail(msg);
     res
       .status(200)
       .json({ status: "success", data: `Email Was Send Successfully` });
-    SendUserEmail(name, email, message);
   } catch (error) {
     next(new ApiError(`Error From User Message ${error} `, 500));
   }

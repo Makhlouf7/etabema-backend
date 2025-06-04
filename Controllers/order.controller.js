@@ -1,7 +1,7 @@
 import Order from "../Models/Order.model.js";
 import ApiError from "../Utils/ApiError.js";
-import { emailOptions } from "../Middelwares/email.js";
-import catchAsync from "../Utils/catchAsync.js";
+import sendEmail from "../Services/emailService.js";
+import orderEmailTemplate from "../Utils/emailTemplates/orderEmail.js";
 
 const createOrder = async (req, res, next) => {
   try {
@@ -12,9 +12,16 @@ const createOrder = async (req, res, next) => {
 
     let newOrder = new Order(order);
     await newOrder.save();
-    res.status(201).json({ status: "success", data: newOrder });
 
-    emailOptions(newOrder.email, newOrder.status, newOrder.orderID);
+    const msg = {
+      to: newOrder.email,
+      from: `no-reply@etabema.com`,
+      subject: `Track Your Order – Etabema Cosméticos`,
+      html: orderEmailTemplate(newOrder.orderID, newOrder.status),
+    };
+
+    await sendEmail(msg);
+    res.status(201).json({ status: "success", data: newOrder });
   } catch (error) {
     next(new ApiError(`Error Form Create Order `, 500));
   }
@@ -96,9 +103,16 @@ const updateOrder = async (req, res, next) => {
       { ...newData },
       { new: true }
     );
-    res.status(200).json({ status: "Success", data: data });
 
-    emailOptions(data.email, data.status, data.orderID);
+    const msg = {
+      to: data.email,
+      from: `no-reply@etabema.com`,
+      subject: `Track Your Order – Etabema Cosméticos`,
+      html: orderEmailTemplate(data.orderID, data.status),
+    };
+
+    await sendEmail(msg);
+    res.status(201).json({ status: "success", data });
   } catch (error) {
     console.log(error);
 

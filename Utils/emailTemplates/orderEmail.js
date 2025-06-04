@@ -1,4 +1,14 @@
-<div style="font-family: Arial, sans-serif; margin: 0">
+const orderEmailTemplate = (orderCode, orderStatus) => {
+  const translations = {
+    confirmed: "Order Received",
+    design: "Design Phase",
+    manufacturing: "Box Manufacturing Phase",
+    printing: "Printing Phase",
+    packing: "Packing Phase",
+    shipped: "Ready for Shipping",
+  };
+
+  return `<div style="font-family: Arial, sans-serif; margin: 0">
   <div
     style="
       background-color: #123d47;
@@ -9,7 +19,7 @@
     "
   >
     <img
-      src="http://127.0.0.1:5000/images/logo.png"
+      src="https://api.etabema.com/images/logo.png"
       alt="Etabema Logo"
       style="height: 40px; width: auto; display: block; margin-right: auto"
     />
@@ -57,3 +67,8 @@
     >
   </div>
 </div>
+
+`;
+};
+
+export default orderEmailTemplate;

@@ -2,7 +2,6 @@ import Category from "../Models/Category.model.js";
 import Products from "../Models/Products.model.js";
 import ApiError from "../Utils/ApiError.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { ValidationError } from "../Utils/ValidationError.js";
 import fs from "fs";
 import path from "path";
 

@@ -49,7 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 app.use("/uploads", express.static("./uploads"));
-app.use("/Post", express.static("./Post"));
+app.use("/images", express.static("./images"));
 
 // Test Route
 app.get("/test", (req, res) => {

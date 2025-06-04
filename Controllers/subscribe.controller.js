@@ -2,19 +2,24 @@ import Subscribe from "../Models/subscribers.model.js";
 import catchAsync from "../Utils/catchAsync.js";
 import sendEmail from "../Services/emailService.js";
 import ApiError from "../Utils/ApiError.js";
+import verifyEmailTemplate from "../Utils/emailTemplates/verifyEmail.js";
+import emailVerifiedTemplate from "../Utils/emailTemplates/emailVerified.js";
+import baseEmailTemplate from "../Utils/emailTemplates/baseEmail.js";
+import emailUnsubscribedTemplate from "../Utils/emailTemplates/unsubscribed.js";
 
 // Helper Functions =====
 
-const sendVerificationEmail = async (emailToVerify, id) => {
-  const VERIFICATION_HTML = `<h1> Thank you for signing up for Etabema newsletter!
-      <p>Please click on the link below to verify your email</p>
-      <a href="${process.env.SERVER_URL}/subscribe/verify?id=${id}">Verify your email</a>`;
+const sendVerificationEmail = async (req, emailToVerify, id) => {
+  const URL = `${req.protocol}://${req.get("host")}/subscribe/verify?id=${id}`;
+  const VERIFICATION_HTML = verifyEmailTemplate(URL);
 
-  return sendEmail(
-    emailToVerify,
-    "Etabema - Verify Your Email",
-    VERIFICATION_HTML
-  );
+  const msg = {
+    subject: "Etabema - Verify Your Email",
+    from: "no-reply@etabema.com",
+    to: emailToVerify,
+    html: VERIFICATION_HTML,
+  };
+  await sendEmail(msg);
 };
 
 const subscriberConfirmed = catchAsync(async (req, res, next) => {
@@ -24,36 +29,19 @@ const subscriberConfirmed = catchAsync(async (req, res, next) => {
   res
     .status(200)
     .set("Content-Type", "text/html")
-    .send(`<h1>Email Successfully Verified</h1>`);
+    .send(`${emailVerifiedTemplate()}`);
 });
-
-const sendBulkEmails = async (subject, body) => {
-  // console.log("Sending to all subscribers");
-  const allSubscribers = await Subscribe.find({ verified: true });
-
-  for (const subscriber of allSubscribers) {
-    const bodyWithUnsubscribe = `<a href="${process.env.SERVER_URL}/subscribe/unsubscribe?id=${subscriber.id}">Unsubscribe</a> <p>${body}</p>`;
-
-    try {
-      await sendEmail(subscriber.email, subject, bodyWithUnsubscribe);
-      // console.log(`Email sent to ${subscriber.email}`);
-    } catch (error) {
-      // console.error(`Failed to send email to ${subscriber.email}:`, error);
-    }
-
-    // Rate limiting: wait for 2 second between sending emails
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-  }
-
-  // console.log("Sent to all subscribers");
-};
 
 // HTTP Functions =====
 const addSubscriber = catchAsync(async (req, res, next) => {
-  const subscriber = await Subscribe.create(req.body);
-  sendVerificationEmail(subscriber.email, subscriber._id)
+  // if we did sent him an email before, we just return the existing subscriber else we create a new one
+  const subscriber =
+    (await Subscribe.findOne({ email: req.body.email })) ||
+    (await Subscribe.create(req.body));
+
+  sendVerificationEmail(req, subscriber.email, subscriber._id)
     .then(() => {
-      res.status(201).json({
+      res.status(202).json({
         status: "success",
         data: subscriber,
       });
@@ -76,11 +64,27 @@ const getAllSubscribers = catchAsync(async (req, res, next) => {
 
 const sendToAllSubscribers = catchAsync(async (req, res, next) => {
   const { subject, message } = req.body;
-  sendBulkEmails(subject, message);
-  console.log(message);
+  const subscribers = await Subscribe.find({ verified: true });
+
+  for (const sub of subscribers) {
+    const unsubscribeLink = `${req.protocol}://${req.get(
+      "host"
+    )}/subscribe/unsubscribe?id=${sub.id}`;
+
+    try {
+      await sendEmail({
+        subject,
+        from: "no-reply@etabema.com",
+        to: sub.email,
+        html: baseEmailTemplate(message, unsubscribeLink),
+      });
+    } catch (e) {}
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
   res.status(202).json({
     status: "success",
-    message: "Email is being sent to all subscribers",
     data: null,
   });
 });
@@ -92,7 +96,7 @@ const newsUnsubscribe = catchAsync(async (req, res, next) => {
   res
     .status(200)
     .set("Content-Type", "text/html")
-    .send(`<h1>You have successfully unsubscribed from our newsletter</h1>`);
+    .send(`${emailUnsubscribedTemplate()}`);
 });
 
 export {
