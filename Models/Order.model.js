@@ -10,10 +10,6 @@ let orderSchema = new mongoose.Schema({
     unique: true,
     default: Date.now(),
   },
-  title: {
-    type: String,
-    trim: true,
-  },
   email: {
     type: String,
     trim: true,

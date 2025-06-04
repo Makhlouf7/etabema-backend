@@ -10,21 +10,15 @@ import {
   authencatication,
   restrictTo,
 } from "../Middelwares/auth.middelware.js";
-import { emailValidationMiddellware } from "../Middelwares/validation.middelwares.js";
 
 let orderRoutes = express.Router();
 
 orderRoutes.route("/").get(getAllOrders);
 orderRoutes.route("/:id").get(getOrderById);
 
-orderRoutes.use(authencatication);
-orderRoutes
-  .route("/create-order")
-  .post(emailValidationMiddellware, createOrder);
+orderRoutes.use(authencatication, restrictTo("admin"));
+orderRoutes.route("/create-order").post(createOrder);
 
-orderRoutes
-  .route("/:id")
-  .delete(restrictTo("admin"), deleteOrder)
-  .patch(restrictTo("admin"), emailValidationMiddellware, updateOrder);
+orderRoutes.route("/:id").delete(deleteOrder).patch(updateOrder);
 
 export default orderRoutes;

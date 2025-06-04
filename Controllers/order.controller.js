@@ -23,6 +23,7 @@ const createOrder = async (req, res, next) => {
     await sendEmail(msg);
     res.status(201).json({ status: "success", data: newOrder });
   } catch (error) {
+    console.log(error);
     next(new ApiError(`Error Form Create Order `, 500));
   }
 };
