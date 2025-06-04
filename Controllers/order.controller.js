@@ -3,15 +3,17 @@ import ApiError from "../Utils/ApiError.js";
 import sendEmail from "../Services/emailService.js";
 import orderEmailTemplate from "../Utils/emailTemplates/orderEmail.js";
 
+function generateTrackingCode() {
+  const timestamp = Date.now().toString();
+  const random = Math.floor(10000000 + Math.random() * 90000000).toString();
+  return `${random}-${timestamp}`;
+}
 const createOrder = async (req, res, next) => {
   try {
-    let order = req.body;
-
-    order.createdAt = new Date().toISOString();
-    order.user = req._id;
-
-    let newOrder = new Order(order);
-    await newOrder.save();
+    const newOrder = await Order.create({
+      ...req.body,
+      orderID: generateTrackingCode(),
+    });
 
     const msg = {
       to: newOrder.email,

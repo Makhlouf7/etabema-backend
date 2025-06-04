@@ -49,7 +49,8 @@ let orderSchema = new mongoose.Schema({
     trim: true,
   },
   createdAt: {
-    type: String,
+    type: Date,
+    default: new Date(),
   },
 });
 
